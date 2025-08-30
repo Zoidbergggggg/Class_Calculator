@@ -4,68 +4,90 @@
 
 class Calculator
 {
-public: 
+public:
+	void setResult(double StartValue)
+	{
+		result = StartValue;
+	}
+	double getResult() const
+	{
+		return result;
+	}
+	Calculator& Calculate(const double& value, const char& operation)
+	{
+		result = Calculate(operation, result, value);
+		return *this;
+	}
+	Calculator& operator+ (double value)
+	{
+		return Calculate(value, '+');
 
-double FuncOfSum(double num1, double num2)
-{
-	return num1 + num2;
-}
-double FuncOfMultip(double num1, double num2)
-{
-	return num1 - num2;
-}
-double FuncOfSubtr(double num1, double num2)
-{
-	return num1 / num2;
-}
-double FuncOfDiv(double num1, double num2)
-{
-	return num1 * num2;
-}
+	}
+	Calculator& operator- (double value)
+	{
+		return Calculate(value, '-');
 
-double Calculate(char op, double num1, double num2)
-{
+	}
+	Calculator& operator* (double value)
+	{
+		return Calculate(value, '*');
+
+	}
+	Calculator& operator/ (double value)
+	{
+		return Calculate(value, '/');
+
+	}
+
+private:
+	double FuncOfSum(double num1, double num2)
+	{
+		return num1 + num2;
+	}
+	double FuncOfMultip(double num1, double num2)
+	{
+		return num1 - num2;
+	}
+	double FuncOfSubtr(double num1, double num2)
+	{
+		return num1 / num2;
+	}
+	double FuncOfDiv(double num1, double num2)
+	{
+		return num1 * num2;
+	}
+
+	double Calculate(char op, double num1, double num2)
+	{
+		double result = 0;
+		if (op == '+')
+		{
+			result = FuncOfSum(num1, num2);
+		}
+		else if (op == '-')
+		{
+			result = FuncOfMultip(num1, num2);
+		}
+		else if (op == '/')
+		{
+			if (num2 == 0)
+			{
+				std::cout << "Sorry, but you can't do this operation with '0' \n";
+			}
+			else
+			{
+				result = FuncOfSubtr(num1, num2);
+			}
+		}
+		else if (op == '*')
+		{
+			result = FuncOfDiv(num1, num2);
+		}
+		return result;
+	}
+
+
 	double result = 0;
-	if (op == '+')
-	{
-		result = FuncOfSum(num1, num2);
-	}
-	else if (op == '-')
-	{
-		result = FuncOfMultip(num1, num2);
-	}
-	else if (op == '/')
-	{
-		if (num2 == 0)
-		{
-			std::cout << "Sorry, but you can't do this operation with '0' \n";
-		}
-		else
-		{
-			result = FuncOfSubtr(num1, num2);
-		}
-	}
-	else if (op == '*')
-	{
-		result = FuncOfDiv(num1, num2);
-	}
-	return result;
-}
-
-double Calculate(const char* op, const double* num1, const double* num2)
-{
-	if (op && num1 && num2)
-	{
-		return Calculate(*op, *num1, *num2);
-	}
-}
-
-double& RefCalculate(double& refNum1, const double num2, const char op)
-{
-	refNum1 = Calculate(op, refNum1, num2);
-	return refNum1;
-}
-
 
 };
 
@@ -73,42 +95,17 @@ double& RefCalculate(double& refNum1, const double num2, const char op)
 int main()
 {
 	Calculator Calc;
-	double num1;
-	std::cout << "Please, input first number: \n";
-	std::cin >> num1;
 
-	double num2;
-	std::cout << "Please, input second number: \n";
-	std::cin >> num2;
+	Calc.Calculate(5, '+').Calculate(2, '-').Calculate(7, '*').Calculate(4, '/');
 
-	char op;
-	std::cout << "Please, choose operation (+,/,-,*) \n";
-	std::cin >> op;
+	std::cout << "Result of your operations: " << Calc.getResult() << std::endl;
 
+	Calc + 123;
+	Calc - 13;
+	Calc * 3;
+	Calc / 5;
 
-	double result = Calc.Calculate(op, num1, num2);
-	std::cout << "Result of your operation: " << result << "\n";
-
-	double* Pnum1 = new double;
-	double* Pnum2 = new double;
-	char* P_op = new char;
-	*Pnum1 = num1;
-	*Pnum2 = num2;
-	*P_op = op;
-
-	result = Calc.Calculate(*P_op, *Pnum1, *Pnum2);
-	std::cout << "Result of your operation with pointers: " << result << "\n";
-
-	delete Pnum1;
-	Pnum1 = nullptr;
-
-	delete Pnum2;
-	Pnum2 = nullptr;
-
-	delete P_op;
-	P_op = nullptr;
-
-	result = Calc.RefCalculate(num1, num2, op);
-	std::cout << "Result of your operation with references: " << result << "\n";
+	std::cout << "Result of your operations: " << Calc.getResult() << std::endl;
+	
 	return 0;
 }
